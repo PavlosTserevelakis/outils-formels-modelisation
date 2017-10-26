@@ -16,6 +16,7 @@ public extension PTNet {
 
     public func markingGraph(from marking: PTMarking) -> MarkingGraph? {
         // Write here the implementation of the marking graph generation.
+        
         return nil
     }
 

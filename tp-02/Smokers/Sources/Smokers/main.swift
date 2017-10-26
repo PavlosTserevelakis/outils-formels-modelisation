@@ -1,8 +1,10 @@
 import PetriKit
 import SmokersLib
+import Foundation
 
 // Instantiate the model.
 let model = createModel()
+
 
 // Retrieve places model.
 guard let r  = model.places.first(where: { $0.name == "r" }),
@@ -21,6 +23,8 @@ else {
 
 // Create the initial marking.
 let initialMarking: PTMarking = [r: 1, p: 0, t: 0, m: 0, w1: 1, s1: 0, w2: 1, s2: 0, w3: 1, s3: 0]
+
+try! model.saveAsDot(to: URL(fileURLWithPath: "test.dot"), withMarking: [r: 0, p: 1, t: 2, m: 3, s1: 4, w1: 5, s2: 6, w2: 7, s3: 8, w3: 9])
 
 // Create the marking graph (if possible).
 if let markingGraph = model.markingGraph(from: initialMarking) {
