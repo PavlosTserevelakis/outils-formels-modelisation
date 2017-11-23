@@ -50,3 +50,19 @@ do {
         print(m)
     }
 }
+
+
+print()
+print("Réponse 1 :")
+let Philos = lockFreePhilosophers(n: 5)
+let GraPhilo = Philos.markingGraph(from: Philos.initialMarking!)
+print(GraPhilo!.count)
+
+print()
+print("Réponse 2 :")
+let Philos2 = lockablePhilosophers(n: 5)
+let GraPhilo2 = Philos2.markingGraph(from: Philos2.initialMarking!)
+print(GraPhilo2!.count)
+
+print()
+print("Réponse 3 :")

@@ -2,18 +2,58 @@ extension PredicateNet {
 
     /// Returns the marking graph of a bounded predicate net.
     public func markingGraph(from marking: MarkingType) -> PredicateMarkingNode<T>? {
-        // Write your code here ...
 
-        // Note that I created the two static methods `equals(_:_:)` and `greater(_:_:)` to help
-        // you compare predicate markings. You can use them as the following:
-        //
-        //     PredicateNet.equals(someMarking, someOtherMarking)
-        //     PredicateNet.greater(someMarking, someOtherMarking)
-        //
-        // You may use these methods to check if you've already visited a marking, or if the model
-        // is unbounded.
 
-        return nil
+        let initialNode = PredicateMarkingNode<T>(marking: marking)
+        var seen = [initialNode]
+        self.computeSuccessors(of: initialNode, seen: &seen, predecessors: [])
+
+        return initialNode
+    }
+
+    public func computeSuccessors(
+      of currentNode: PredicateMarkingNode<T>,
+      seen: inout [PredicateMarkingNode<T>],
+      predecessors: [PredicateMarkingNode<T>])
+    {
+      for transition in self.transitions
+      {
+        currentNode.successors[transition] = [:]
+        let currentBindings = transition.fireableBingings(from: currentNode.marking)
+        //print("currentbindings")
+        //{
+          for binding in currentBindings
+          {
+            guard let nextMarking = transition.fire(from: currentNode.marking, with: binding) else {
+              //print("continue 1")
+                continue
+            }
+            let predecessors = predecessors + [currentNode]
+            //print("predecessors")
+            if (seen.contains(where: {PredicateNet.greater(nextMarking, $0.marking)}))
+            {
+              //print("continue 2")
+              continue
+            }
+            if let previouslySeen = seen.first(where: {PredicateNet.equals($0.marking, nextMarking)})
+            {
+              currentNode.successors[transition]![binding] = previouslySeen
+              //print("continue 3")
+              continue
+            }
+            let successor = PredicateMarkingNode<T>(marking: nextMarking, successors: [:])
+            //print("1")
+            currentNode.successors[transition]![binding] = successor
+            //print("2")
+            seen.append(successor)
+            //print("3")
+            self.computeSuccessors(
+              of : successor,
+              seen : &seen,
+              predecessors: predecessors)
+          }
+        //}
+      }
     }
 
     // MARK: Internals
