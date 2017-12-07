@@ -2,9 +2,55 @@ import ProofKitLib
 
 let a: Formula = "a"
 let b: Formula = "b"
-let f = a && b
+let c: Formula = "c"
+let d: Formula = "d"
 
+print("-----------------------------")
+let f = !( a && b ) || ( c && d )
+print("Formule 1: ")
 print(f)
+print("NNF: ")
+print(f.nnf)
+print("DNF: ")
+print(f.dnf)
+print("CNF: ")
+print(f.cnf)
+
+print("-----------------------------")
+let lol = ( a && b) || ( c && d )
+
+print("Formule 2: ")
+print(lol)
+print("NNF: ")
+print(lol.nnf)
+print("DNF: ")
+print(lol.dnf)
+print("CNF: ")
+print(lol.cnf)
+
+print("-----------------------------")
+let lolol = ( a || b) && ( c || d )
+print("Formule 3: ")
+print(lolol)
+print("NNF: ")
+print(lolol.nnf)
+print("DNF: ")
+print(lolol.dnf)
+print("CNF: ")
+print(lolol.cnf)
+
+print("-----------------------------")
+let lololol = a || (b && (c || d))
+print("Formule 4: ")
+print(lololol)
+print("NNF: ")
+print(lololol.nnf)
+print("DNF: ")
+print(lololol.dnf)
+print("CNF: ")
+print(lololol.cnf)
+
+print("-----------------------------")
 
 let booleanEvaluation = f.eval { (proposition) -> Bool in
     switch proposition {

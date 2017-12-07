@@ -73,13 +73,86 @@ public enum Formula {
     /// The disjunctive normal form of the formula.
     public var dnf: Formula {
         // Write your code here ...
-        return self
+        switch self {
+        case .proposition(_):
+            return self
+        case .negation(let a):
+            switch a {
+            case .proposition(_):
+                return self
+            case .negation(let b):
+                return b.dnf
+            case .disjunction(let b, let c):
+                return (!b).dnf && (!c).dnf
+            case .conjunction(let b, let c):
+                return (!b).dnf || (!c).dnf
+            case .implication(_):
+                return (!a.dnf).dnf
+            }
+        case .disjunction(let b, let c):
+            return b.dnf || c.dnf
+        case .conjunction(let b, let c):
+            switch b {
+            case .disjunction(let d, let e):
+              switch c {
+              case .disjunction(let f, let g):
+                  return (d.dnf && f.dnf).dnf || (d.dnf && g.dnf).dnf || (e.dnf && f.dnf).dnf || (e.dnf && g.dnf).dnf
+              default:
+                  return (d.dnf && c.dnf).dnf || (e.dnf && c.dnf).dnf
+              }
+            default:
+              switch c {
+              case .disjunction(let d, let e):
+                  return (b.dnf && d.dnf).dnf || (b.dnf && e.dnf).dnf
+              default:
+                  return b.dnf && c.dnf
+              }
+            }
+        case .implication(let b, let c):
+            return (!b).dnf || c.dnf
+        }
     }
 
     /// The conjunctive normal form of the formula.
     public var cnf: Formula {
-        // Write your code here ...
-        return self
+      switch self {
+      case .proposition(_):
+          return self
+      case .negation(let a):
+          switch a {
+          case .proposition(_):
+              return self
+          case .negation(let b):
+              return b.nnf
+          case .disjunction(let b, let c):
+              return (!b).nnf && (!c).nnf
+          case .conjunction(let b, let c):
+              return (!b).nnf || (!c).nnf
+          case .implication(_):
+              return (!a.nnf).nnf
+          }
+      case .disjunction(let b, let c):
+        switch b {
+        case .conjunction(let d, let e):
+          switch c {
+          case .conjunction(let f, let g):
+              return (d.dnf || f.dnf).dnf && (d.dnf || g.dnf).dnf && (e.dnf || f.dnf).dnf && (e.dnf || g.dnf).dnf
+          default:
+              return (d.dnf || c.dnf).dnf && (e.dnf || c.dnf).dnf
+          }
+        default:
+          switch c {
+          case .conjunction(let d, let e):
+              return (b.dnf || d.dnf).dnf && (b.dnf || e.dnf).dnf
+          default:
+              return b.dnf || c.dnf
+          }
+        }
+      case .conjunction(let b, let c):
+          return b.nnf && c.nnf
+      case .implication(let b, let c):
+          return (!b).nnf || c.nnf
+      }
     }
 
     /// The propositions the formula is based on.
